@@ -23,7 +23,7 @@ func RegisterHTTPHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Сохраняем пользователя в базе
-	err := RegisterHandler(user)
+	err := RegisterHandler(&user)
 	if err != nil {
 		// Логин занят
 		if errors.Is(err, gopherkeeper.ErrUserLoginConflict) {

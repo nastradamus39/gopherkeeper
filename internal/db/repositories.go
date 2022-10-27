@@ -33,8 +33,8 @@ func (r *UsersRepository) Save(user interface{}) error {
 	}
 
 	if !u.Persist {
-		res, err := r.db.NamedQuery(`INSERT INTO users(login, password) 
-			VALUES (:login, :password) on conflict (login) DO NOTHING RETURNING login`, &u)
+		res, err := r.db.NamedQuery(`INSERT INTO users(login, password, token) 
+			VALUES (:login, :password, :token) on conflict (login) DO NOTHING RETURNING login`, &u)
 
 		if err != nil && res.Err() != nil {
 			return err
@@ -57,6 +57,14 @@ func (r *UsersRepository) Delete(user interface{}) error {
 func (r *UsersRepository) Find(login string) (user *User, err error) {
 	user = &User{}
 	err = r.db.Get(user, "SELECT * FROM users WHERE login = $1", login)
+	user.Persist = true
+	return
+}
+
+// FindByToken ищет пользователя по токену
+func (r *UsersRepository) FindByToken(token string) (user *User, err error) {
+	user = &User{}
+	err = r.db.Get(user, "SELECT * FROM users WHERE token = $1", token)
 	user.Persist = true
 	return
 }
