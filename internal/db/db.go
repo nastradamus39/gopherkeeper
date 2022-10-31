@@ -9,7 +9,8 @@ import (
 )
 
 type repositories struct {
-	Users *UsersRepository
+	Users   *UsersRepository
+	Secrets *SecretsRepository
 }
 
 var repos *repositories
@@ -23,6 +24,10 @@ func InitDB() (err error) {
 	repos = &repositories{
 		Users: &UsersRepository{repo{
 			table: "users",
+			db:    gopherkeeper.DB,
+		}},
+		Secrets: &SecretsRepository{repo{
+			table: "secrets",
 			db:    gopherkeeper.DB,
 		}},
 	}

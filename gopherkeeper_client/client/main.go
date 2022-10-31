@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"log"
 
+	"gophkeeper/gopherkeeper/proto"
 	"gophkeeper/gopherkeeper_client/client/interceptors"
-	"gophkeeper/internal/proto"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

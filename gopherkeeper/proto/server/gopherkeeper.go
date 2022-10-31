@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"gophkeeper/gopherkeeper/proto"
 	"gophkeeper/internal/db"
 	"gophkeeper/internal/handlers"
-	"gophkeeper/internal/proto"
 )
 
 // GopherKeeper поддерживает все необходимые методы сервера.
@@ -58,4 +58,23 @@ func (s *GopherKeeper) SecretsListHandler(ctx context.Context, in *proto.Secrets
 	})
 
 	return &proto.SecretsListResponse{Secrets: secrets}, nil
+}
+
+// SecretsAddHandler Добавляет секрет пользователя
+func (s *GopherKeeper) SecretsAddHandler(ctx context.Context, in *proto.SecretsAddRequest) (*proto.SecretsAddResponse, error) {
+	fmt.Println("SecretsAddHandler")
+
+	secret := db.Secret{
+		Persist: false,
+		Login:   in.Secret.Login,
+		Comment: in.Secret.Comment,
+		Card:    in.Secret.Card,
+	}
+
+	err := db.Repositories().Secrets.Save(secret)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.SecretsAddResponse{}, nil
 }

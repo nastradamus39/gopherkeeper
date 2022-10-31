@@ -25,6 +25,10 @@ type UsersRepository struct {
 	repo
 }
 
+type SecretsRepository struct {
+	repo
+}
+
 // Save сохраняет пользователя
 func (r *UsersRepository) Save(user interface{}) error {
 	u, ok := user.(*User)
@@ -67,4 +71,28 @@ func (r *UsersRepository) FindByToken(token string) (user *User, err error) {
 	err = r.db.Get(user, "SELECT * FROM users WHERE token = $1", token)
 	user.Persist = true
 	return
+}
+
+// Save сохраняет секрет пользователя
+func (r *SecretsRepository) Save(secret interface{}) error {
+	s, ok := secret.(*Secret)
+	if !ok {
+		return errors.New("unsupported type")
+	}
+
+	if !s.Persist {
+		res, err := r.db.NamedQuery(`INSERT INTO secrets(login, comment, card) 
+			VALUES (:login, :comment, :card)`, &s)
+
+		if err != nil && res.Err() != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Delete удаляет секрет пользователя
+func (r *SecretsRepository) Delete(secret interface{}) error {
+	return nil
 }

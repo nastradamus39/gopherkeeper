@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/grpc/status"
 
-	"gophkeeper/internal/proto"
+	"gophkeeper/gopherkeeper/proto"
 
 	"github.com/spf13/cobra"
 )

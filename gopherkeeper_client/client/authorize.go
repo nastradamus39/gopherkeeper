@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"gophkeeper/gopherkeeper/proto"
 	"gophkeeper/internal/db"
-	"gophkeeper/internal/proto"
 
 	"github.com/spf13/cobra"
 

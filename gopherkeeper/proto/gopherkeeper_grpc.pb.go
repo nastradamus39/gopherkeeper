@@ -25,6 +25,7 @@ type SecretsClient interface {
 	AuthorizeHandler(ctx context.Context, in *AuthorizeRequest, opts ...grpc.CallOption) (*AuthorizeResponse, error)
 	RegisterHandler(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	SecretsListHandler(ctx context.Context, in *SecretsListRequest, opts ...grpc.CallOption) (*SecretsListResponse, error)
+	SecretsAddHandler(ctx context.Context, in *SecretsAddRequest, opts ...grpc.CallOption) (*SecretsAddResponse, error)
 }
 
 type secretsClient struct {
@@ -62,6 +63,15 @@ func (c *secretsClient) SecretsListHandler(ctx context.Context, in *SecretsListR
 	return out, nil
 }
 
+func (c *secretsClient) SecretsAddHandler(ctx context.Context, in *SecretsAddRequest, opts ...grpc.CallOption) (*SecretsAddResponse, error) {
+	out := new(SecretsAddResponse)
+	err := c.cc.Invoke(ctx, "/gopherkeeper.Secrets/SecretsAddHandler", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SecretsServer is the server API for Secrets service.
 // All implementations must embed UnimplementedSecretsServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type SecretsServer interface {
 	AuthorizeHandler(context.Context, *AuthorizeRequest) (*AuthorizeResponse, error)
 	RegisterHandler(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	SecretsListHandler(context.Context, *SecretsListRequest) (*SecretsListResponse, error)
+	SecretsAddHandler(context.Context, *SecretsAddRequest) (*SecretsAddResponse, error)
 	mustEmbedUnimplementedSecretsServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedSecretsServer) RegisterHandler(context.Context, *RegisterRequ
 }
 func (UnimplementedSecretsServer) SecretsListHandler(context.Context, *SecretsListRequest) (*SecretsListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SecretsListHandler not implemented")
+}
+func (UnimplementedSecretsServer) SecretsAddHandler(context.Context, *SecretsAddRequest) (*SecretsAddResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SecretsAddHandler not implemented")
 }
 func (UnimplementedSecretsServer) mustEmbedUnimplementedSecretsServer() {}
 
@@ -152,6 +166,24 @@ func _Secrets_SecretsListHandler_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Secrets_SecretsAddHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SecretsAddRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SecretsServer).SecretsAddHandler(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gopherkeeper.Secrets/SecretsAddHandler",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SecretsServer).SecretsAddHandler(ctx, req.(*SecretsAddRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Secrets_ServiceDesc is the grpc.ServiceDesc for Secrets service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var Secrets_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SecretsListHandler",
 			Handler:    _Secrets_SecretsListHandler_Handler,
+		},
+		{
+			MethodName: "SecretsAddHandler",
+			Handler:    _Secrets_SecretsAddHandler_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

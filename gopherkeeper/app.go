@@ -7,6 +7,7 @@ import (
 
 const (
 	SessionName               = "gopherKeeperSid"
+	TokenPath                 = ".gph_key"
 	ContextUserKey ContextKey = iota
 )
 

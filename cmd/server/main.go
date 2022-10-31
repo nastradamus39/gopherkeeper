@@ -19,11 +19,10 @@ import (
 	"crypto/x509/pkix"
 
 	"gophkeeper/gopherkeeper"
+	"gophkeeper/gopherkeeper/proto"
 	"gophkeeper/internal/db"
 	"gophkeeper/internal/handlers"
 	"gophkeeper/internal/interceptors"
-	"gophkeeper/internal/proto"
-	"gophkeeper/internal/proto/server"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/go-chi/chi/v5"
@@ -48,7 +47,7 @@ func main() {
 	}
 	defer flog.Close()
 
-	//log.SetOutput(flog)
+	log.SetOutput(flog)
 
 	// Переменные окружения в конфиг
 	err = env.Parse(&gopherkeeper.Cfg)
@@ -89,7 +88,7 @@ func main() {
 		c := grpc.NewServer(grpc.Creds(creds), grpc.UnaryInterceptor(interceptors.AuthInterceptor))
 
 		// регистрируем сервис
-		proto.RegisterSecretsServer(c, &server.GopherKeeper{})
+		proto.RegisterSecretsServer(c, proto.UnimplementedSecretsServer{})
 		if err := c.Serve(listen); err != nil {
 			log.Fatal(err)
 			return
@@ -126,7 +125,6 @@ func Router() (r *chi.Mux) {
 // privateRouter Роутер для закрытых авторизацией эндпоинтов
 func privateRouter() http.Handler {
 	r := chi.NewRouter()
-	//r.Use(middlewares.UserAuth) // проверка авторизации
 
 	return r
 }
