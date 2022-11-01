@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package gopherkeeper;
+
+option go_package = "gopherkeeper/proto";
+
+// AuthorizeHandler
+message AuthorizeRequest {
+  string login = 1;
+  string password = 2;
+}
+message AuthorizeResponse {
+  string token = 1;
+}
+
+// RegisterHandler
+message RegisterRequest {
+  string login = 1;
+  string password = 2;
+}
+message RegisterResponse {
+  string token = 1;
+}
+
+// SecretsHandler
+message Secret {
+  string login = 1;
+  string comment = 2;
+  string card = 3;
+}
+message SecretsListResponse {
+  repeated Secret secrets  = 1;
+}
+message SecretsListRequest {}
+message SecretsAddRequest{
+  Secret secret = 1;
+}
+message SecretsAddResponse{}
+
+service Secrets {
+  rpc AuthorizeHandler(AuthorizeRequest) returns (AuthorizeResponse); // авторизация клиента
+  rpc RegisterHandler(RegisterRequest) returns (RegisterResponse); // регистрация пользователя
+  rpc SecretsListHandler(SecretsListRequest) returns (SecretsListResponse); // список секретов пользователя
+  rpc SecretsAddHandler(SecretsAddRequest) returns (SecretsAddResponse); // добавление нового секрета
+}

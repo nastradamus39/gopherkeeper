@@ -1,0 +1,6 @@
+.idea
+server.log
+cmd/server/server.log
+cmd/server/cert
+cmd/server/key
+gopherkeeper_client/client/.gph_key
